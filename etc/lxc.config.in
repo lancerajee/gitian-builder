@@ -23,9 +23,10 @@ lxc.cgroup.devices.allow = c 254:0 rwm
 lxc.mount.entry=proc ROOTFS/proc proc nodev,noexec,nosuid 0 0
 lxc.mount.entry=sysfs ROOTFS/sys sysfs defaults  0 0
 
-# Container with network virtualized using a pre-configured bridge named br0 and
-# veth pair virtual network devices
-# On the host, run: ifconfig br0 up 10.0.2.2
+# Container with network virtualized using a pre-configured bridge named lxcbr0
+# and veth pair virtual network devices.
+# On the host, run (lxc might already have done this):
+#     ifconfig lxcbr0 up 10.0.3.1
 # Alternatively, you can use another IP range for the bridge interface, in this case set
 # the environment variables GITIAN_HOST_IP and LXC_GUEST_IP appropriately.
 lxc.network.type = veth
