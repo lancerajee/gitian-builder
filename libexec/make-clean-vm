@@ -57,7 +57,7 @@ case $VMSW in
     ;;
   LXC)
     cp -a $BASE $OUT
-    on-target -u root bash < target-bin/bootstrap-fixup
+    on-target -u root /root/firstboot.sh
     ;;
   VBOX)
     VBoxManage snapshot "Gitian-${SUITE}-${ARCH}" restore "Gitian-Clean"
