@@ -22,12 +22,12 @@ def system!(cmd)
 end
 
 def sanitize(str, where)
-  raise "unsanitary string in #{where}" if (str =~ /[^\w.-]/)
+  raise "unsanitary char in #{str}" if (str =~ /[^\w@._+-]/)
   str
 end
 
 def sanitize_path(str, where)
-  raise "unsanitary string in #{where}" if (str =~ /[^@\w\/.:+-]/)
+  raise "unsanitary string in #{where}" if (str =~ /[^@\w\/.:+-{}]/)
   str
 end
 
