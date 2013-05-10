@@ -73,7 +73,12 @@ def build_one_configuration(suite, arch, build_desc)
   system! "on-target true"
 
   info "Preparing build environment"
-  system! "on-target -u root sed \\''s/(ALL)/NOPASSWD:/'\\' -i /etc/sudoers"
+  if ENV["USE_LXC"]
+    # Escaping is borked for LXC commands. :/
+    system! "on-target -u root passwd -d ubuntu"
+  else
+    system! "on-target -u root sed \\''s/(ALL)/NOPASSWD:/'\\' -i /etc/sudoers"
+  end
   system! "on-target setarch #{@arches[arch]} bash < target-bin/init-build.sh"
 
   build_desc["files"].each do |filename|
