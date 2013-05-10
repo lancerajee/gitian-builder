@@ -28,5 +28,5 @@ lxc.mount.entry=sysfs ROOTFS/sys sysfs defaults  0 0
 # On the host, run: ifconfig br0 up 10.0.2.2
 lxc.network.type = veth
 lxc.network.flags = up
-lxc.network.link = br0
+lxc.network.link = lxcbr0
 lxc.network.ipv4 = 10.0.2.5/24
