@@ -197,8 +197,8 @@ build_desc["remotes"].each do |remote|
   unless File.exist?("inputs/#{dir}")
       system!("git clone #{sanitize_path(remote["url"], remote["url"])} inputs/#{dir}")
   end
-#  system!("cd inputs/#{dir} && git fetch origin")
-  commit = sanitize(remote["commit"], remote["commit"])
+  #  system!("cd inputs/#{dir} && git fetch origin")
+  commit = remote["commit"] #sanitize(remote["commit"], remote["commit"])
   commit = `cd inputs/#{dir} && git log --format=%H -1 #{commit}`.strip
   raise "error looking up commit for tag #{remote["commit"]}" unless $?.exitstatus == 0
   system!("cd inputs/#{dir} && git checkout -q #{commit}")
