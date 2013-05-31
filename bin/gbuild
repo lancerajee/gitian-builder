@@ -277,7 +277,7 @@ base_manifests = YAML::Omap.new
 suites.each do |suite|
   suite = sanitize(suite, "suite")
   archs.each do |arch|
-    info "--- Building for #{suite} #{arch} ---"
+    info "--- Building #{package_name} for #{suite} #{arch} ---"
     arch = sanitize(arch, "architecture")
 
     # Build!
