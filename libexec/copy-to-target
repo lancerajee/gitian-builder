@@ -47,7 +47,7 @@ if [ $# = 0 ] ; then
 fi
 
 if [ -z "$USE_LXC" ]; then
-    rsync -a -L -e "ssh $QUIET_FLAG -oConnectTimeout=30 -oNoHostAuthenticationForLocalhost=yes -i ${GITIAN_BASE:-.}/var/id_dsa -p $VM_SSH_PORT" $1 $TUSER@localhost:$2
+    tar -h -C `dirname "$1"` -cf - `basename "$1"` | ssh $QUIET_FLAG -oConnectTimeout=30 -oNoHostAuthenticationForLocalhost=yes -i ${GITIAN_BASE:-.}/var/id_dsa -p $VM_SSH_PORT $TUSER@localhost -- tar -C "$2" -xf -
 else
     config-lxc
     tar -h -C `dirname "$1"` -cf - `basename "$1"` | sudo lxc-start -n gitian -f var/lxc.config -- sudo -i -u $TUSER tar -C "$2" -xf -
