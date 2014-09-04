@@ -50,5 +50,5 @@ if [ -z "$USE_LXC" ]; then
     tar -h -C `dirname "$1"` -cf - `basename "$1"` | ssh $QUIET_FLAG -oConnectTimeout=30 -oNoHostAuthenticationForLocalhost=yes -i ${GITIAN_BASE:-.}/var/id_dsa -p $VM_SSH_PORT $TUSER@localhost -- tar -C "$2" -xf -
 else
     config-lxc
-    tar -h -C `dirname "$1"` -cf - `basename "$1"` | sudo lxc-start -n gitian -f var/lxc.config -- sudo -i -u $TUSER tar -C "$2" -xf -
+    tar -h -C `dirname "$1"` -cf - `basename "$1"` | sudo lxc-execute -n gitian -f var/lxc.config -- sudo -i -u $TUSER tar -C "$2" -xf -
 fi
