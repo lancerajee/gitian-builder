@@ -32,6 +32,22 @@ This performs a build inside a VM, with deterministic inputs and outputs.  If th
 
 Install virtualbox from http://www.virtualbox.org, and make sure `VBoxManage` is in your `$PATH`.
 
+## Debian Guests
+
+Gitian now supports Debian guests in addition to Ubuntu guests. Note that this doesn't mean you can allow the builders to choose to use either Debian or Ubuntu guests. The person creating the Gitian descriptor will need to choose a particular distro and suite for the guest and all builders must use that particular distro and suite, otherwise the software won't reproduce for everyone.
+
+The official vmbuilder only includes support for Ubuntu guests, so you need to install [Joseph Bisch's fork of vmbuilder](https://github.com/josephbisch/vmbuilder), which adds a Debian plugin.
+
+To create a Debian guest:
+
+    bin/make-base-vm --distro debian --suite jessie
+
+There is currently no support for LXC Debian guests. There is just KVM support. LXC support for Debian guests is planned to be added soon.
+
+Only Debian Jessie guests have been tested with Gitian. Debian Jessie is the current stable release of Debian at this time. If you have success (or trouble) with other versions of Debian, please let us know.
+
+If you are creating a Gitian descriptor, you can now specify a distro. If no distro is provided, the default is to assume Ubuntu. Since Ubuntu is assumed, older Gitian descriptors that don't specify a distro will still work as they always have.
+
 ## Create the base VM for use in further builds
 **NOTE:** requires `sudo`, please review the script
 
@@ -88,6 +104,10 @@ If you have everything set-up properly, you should be able to:
     PATH=$PATH:$(pwd)/libexec
     make-clean-vm --suite lucid --arch i386
 
+    # on-target needs $DISTRO to be set to debian if using a Debian guest
+    # (when running gbuild, $DISTRO is set based on the descriptor, so this line isn't needed)
+    DiSTRO=debian
+
     # For LXC:
     LXC_ARCH=i386 LXC_SUITE=lucid on-target ls -la
 
@@ -128,7 +148,7 @@ After you've merged everybody's signatures, verify them:
 * Log files are captured to the _var_ directory
 * You can run the utilities in libexec by running `PATH="libexec:$PATH"`
 * To start the target VM run `start-target 32 lucid-i386` or `start-target 64 lucid-amd64`
-* To ssh into the target run `on-target` or `on-target -u root`
+* To ssh into the target run `on-target` (after setting $DISTRO to debian if using a Debian guest) or `on-target -u root`
 * On the target, the _build_ directory contains the code as it is compiled and _install_ contains intermediate libraries
 * By convention, the script in `<package>.yml` starts with any environment setup you would need to manually compile things on the target
 

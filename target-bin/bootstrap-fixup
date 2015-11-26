@@ -2,7 +2,8 @@
 
 set -e
 
-. /etc/lsb-release
+DISTRIB_NAME=`lsb_release -is`
+DISTRIB_CODENAME=`lsb_release -cs`
 
 ip=`hostname --all-ip-addresses | cut -d ' ' -f1 | cut -d. -f1-3`
 
@@ -14,5 +15,16 @@ else
     MIRROR_HOST_ON_GUEST=${MIRROR_HOST_ON_GUEST:-10.0.2.2}
 fi
 
-echo "deb http://$MIRROR_HOST_ON_GUEST:3142/archive.ubuntu.com/ubuntu $DISTRIB_CODENAME main universe" > $1/etc/apt/sources.list
-echo "deb http://$MIRROR_HOST_ON_GUEST:3142/archive.ubuntu.com/ubuntu $DISTRIB_CODENAME-updates main universe" >> $1/etc/apt/sources.list
+if [ $DISTRIB_NAME = "Ubuntu" ]; then
+  echo "deb http://$MIRROR_HOST_ON_GUEST:3142/archive.ubuntu.com/ubuntu $DISTRIB_CODENAME main universe" > $1/etc/apt/sources.list
+  echo "deb http://$MIRROR_HOST_ON_GUEST:3142/security.ubuntu.com/ubuntu $DISTRIB_CODENAME-security main universe" >> $1/etc/apt/sources.list
+  echo "deb http://$MIRROR_HOST_ON_GUEST:3142/archive.ubuntu.com/ubuntu $DISTRIB_CODENAME-updates main universe" >> $1/etc/apt/sources.list
+elif [ $DISTRIB_NAME = "Debian" ]; then
+  echo "deb http://$MIRROR_HOST_ON_GUEST:3142/ftp.debian.org/debian $DISTRIB_CODENAME main" > $1/etc/apt/sources.list
+  echo "deb http://$MIRROR_HOST_ON_GUEST:3142/security.debian.org/ $DISTRIB_CODENAME/updates main" >> $1/etc/apt/sources.list
+  echo "deb http://$MIRROR_HOST_ON_GUEST:3142/ftp.debian.org/debian $DISTRIB_CODENAME-updates main" >> $1/etc/apt/sources.list
+  # grub-legacy conflicts grub-pc dependencies
+  # No grub-legacy on Ubuntu, just on Debian
+  # Work around bcron-run conflict due to cron being removed
+  apt-get purge -y grub-legacy bcron-run &> /dev/null
+fi
