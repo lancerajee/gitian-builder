@@ -24,6 +24,7 @@ echo '127.0.1.1 gitian' >> /etc/hosts
 # If LXC
 if grep /lxc/gitian /proc/1/cgroup > /dev/null; then
   adduser --disabled-password --gecos ${DISTRIB_NAME,,} --quiet ${DISTRIB_NAME,,} || true
+  adduser ${DISTRIB_NAME,,} sudo
   apt-get remove -y rsyslog || true
   dpkg-divert --local --rename --add /sbin/initctl
   ln -sf /bin/true /sbin/initctl
