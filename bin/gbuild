@@ -35,7 +35,7 @@ def info(str)
   puts str unless @options[:quiet]
 end
 
-def build_one_configuration(suite, arch, build_desc)
+def build_one_configuration(distro, suite, arch, build_desc)
   FileUtils.rm_f("var/build.log")
 
   bits = @bitness[arch] or raise "unknown architecture ${arch}"
@@ -75,7 +75,7 @@ def build_one_configuration(suite, arch, build_desc)
   info "Preparing build environment"
   if ENV["USE_LXC"]
     # Escaping is borked for LXC commands. :/
-    system! "on-target -u root passwd -d ubuntu"
+    system! "on-target -u root passwd -d #{distro}"
   else
     system! "on-target -u root sed \\''s/(ALL)/NOPASSWD:/'\\' -i /etc/sudoers"
   end
@@ -281,7 +281,7 @@ suites.each do |suite|
     arch = sanitize(arch, "architecture")
 
     # Build!
-    build_one_configuration(suite, arch, build_desc)
+    build_one_configuration(distro, suite, arch, build_desc)
 
     info "Grabbing results from target"
     system! "copy-from-target #{@quiet_flag} out #{build_dir}"
