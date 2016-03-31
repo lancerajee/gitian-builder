@@ -2,9 +2,13 @@
 
 wd=`pwd`
 
-# Default host IP is 10.0.2.2
+# Default host IP is 10.0.2.2 for KVM and 10.0.3.1 for LXC builds
 if [ -z "$GITIAN_HOST_IP" ]; then
-  GITIAN_HOST_IP=10.0.2.2
+  if [ -z "$USE_LXC" ]; then
+    GITIAN_HOST_IP=10.0.2.2
+  else
+    GITIAN_HOST_IP=10.0.3.1
+  fi
 fi
 
 # Default to host IP if the MIRROR_HOST is not set, or set to 127.0.0.1
