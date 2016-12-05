@@ -102,6 +102,11 @@ def build_one_configuration(distro, suite, arch, build_desc)
   info "Installing additional packages (log in var/install.log)"
   system! "on-target -u root -e DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends -y install #{build_desc["packages"].join(" ")} > var/install.log 2>&1"
 
+  if build_desc.has_key?("backports_packages")
+      info "Installing additional backport packages (log in var/backports-install.log)"
+      system! "on-target -u root -e DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends -y -t #{suite}-backports install #{build_desc["backports_packages"].join(" ")} > var/backports-install.log 2>&1"
+  end
+
   if @options[:upgrade] || system("on-target -u root '[ ! -e /var/cache/gitian/initial-upgrade ]'")
       info "Upgrading system, may take a while"
       system! "on-target -u root bash < target-bin/upgrade-system.sh > var/install.log 2>&1"
